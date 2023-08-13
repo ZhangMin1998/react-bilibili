@@ -1,6 +1,7 @@
 import './index.css'
 import avatar from './images/avatar.png'
 import React from 'react'
+import { v4 as uuid } from 'uuid'
 
 // 时间格式化
 function formatDate (time) {
@@ -48,7 +49,40 @@ class App extends React.Component {
         // 1: 点赞 0：无态度 -1:踩
         attitude: -1
       }
-    ]
+    ],
+    comment: ''
+  }
+  // tab切换
+  switchTab = (type) => {
+    this.setState({
+      active: type
+    })
+  }
+  // 受控组件回调
+  textareaChange = (e) => {
+    this.setState({
+      comment: e.target.value
+    })
+  }
+  submitComment = () => {
+    this.setState({
+      list: [
+        ...this.state.list,
+        {
+          id: uuid(),
+          author: '林俊杰',
+          comment: '江南',
+          time: new Date('2023-08-13 22:35:00'),
+          // 1: 点赞 0：无态度 -1:踩
+          attitude: 1
+        }
+      ]
+    })
+  }
+  deleteComment = (id) => {
+    this.setState({
+      list: this.state.list.filter(item => item.id !== id)
+    })
   }
   render () {
     return (
@@ -64,6 +98,7 @@ class App extends React.Component {
               {
                 this.state.tabs.map(tab => (
                   <li
+                    onClick={() => this.switchTab(tab.type)}
                     key={tab.id}
                     className={tab.type === this.state.active ? 'on' : ''}
                   >按{tab.name}排序</li>
@@ -83,8 +118,10 @@ class App extends React.Component {
                 rows="5"
                 placeholder="发条友善的评论"
                 className="ipt-txt"
+                value={this.state.comment}
+                onChange={this.textareaChange}
               />
-              <button className="comment-submit">发表评论</button>
+              <button className="comment-submit" onClick={this.submitComment}>发表评论</button>
             </div>
             <div className="comment-emoji">
               <i className="face"></i>
@@ -111,7 +148,7 @@ class App extends React.Component {
                       <span className={item.attitude === -1 ? 'hate hated' : 'hate'}>
                         <i className="icon" />
                       </span>
-                      <span className="reply btn-hover">删除</span>
+                      <span className="reply btn-hover" onClick={() => this.deleteComment(item.id)}>删除</span>
                     </div>
                   </div>
                 </div>
