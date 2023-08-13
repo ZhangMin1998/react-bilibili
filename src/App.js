@@ -84,6 +84,36 @@ class App extends React.Component {
       list: this.state.list.filter(item => item.id !== id)
     })
   }
+  toggleLike = (curItem) => {
+    const { attitude, id } = curItem
+    this.setState({
+      list: this.state.list.map(item => {
+        if (item.id === id) {
+          return {
+            ...item,
+            attitude: attitude === 1 ? 0 : 1
+          }
+        } else {
+          return item
+        }
+      })
+    })
+  }
+  toggleHate = (curItem) => {
+    const { attitude, id } = curItem
+    this.setState({
+      list: this.state.list.map(item => {
+        if (item.id === id) {
+          return {
+            ...item,
+            attitude: attitude === -1 ? 0 : -1
+          }
+        } else {
+          return item
+        }
+      })
+    })
+  }
   render () {
     return (
       <div className="App">
@@ -142,10 +172,16 @@ class App extends React.Component {
                     <p className="text">{item.comment}</p>
                     <div className="info">
                       <span className="time">{formatDate(item.time)}</span>
-                      <span className={item.attitude === 1 ? 'like liked' : 'like'}>
+                      <span
+                        className={item.attitude === 1 ? 'like liked' : 'like'}
+                        onClick={() => this.toggleLike(item)}
+                      >
                         <i className="icon" />
                       </span>
-                      <span className={item.attitude === -1 ? 'hate hated' : 'hate'}>
+                      <span
+                        className={item.attitude === -1 ? 'hate hated' : 'hate'}
+                        onClick={() => this.toggleHate(item)}
+                      >
                         <i className="icon" />
                       </span>
                       <span className="reply btn-hover" onClick={() => this.deleteComment(item.id)}>删除</span>
